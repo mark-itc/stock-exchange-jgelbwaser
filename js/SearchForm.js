@@ -13,6 +13,8 @@ console.log('SearchForm.js loaded');
 
 class SearchForm {
 
+    static apiUrlStart = 'https://stock-exchange-dot-full-stack-course-services.ew.r.appspot.com/api/v3/search?query=';
+    static apiUrlEnd = '&amp;limit=10&amp;exchange=NASDAQ';U
    
     constructor(formContainer) {
         this.loadForm(formContainer);
@@ -66,10 +68,7 @@ class SearchForm {
     }
     
     async getSymbolCompanies(symbolToSearch) {
-        const urlStart = 'https://stock-exchange-dot-full-stack-course-services.ew.r.appspot.com/api/v3/search?query=';
-        const urlEnd = '&amp;limit=10&amp;exchange=NASDAQ';
-        const url = urlStart + symbolToSearch + urlEnd;
-
+            const url = SearchForm.apiUrlStart + symbolToSearch + SearchForm.apiUrlEnd;
 
         try {
             const response = await fetch(url);

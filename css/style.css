@@ -6,6 +6,47 @@ body {
     /* color: red; */
 }
 
+.headline-logo {
+    height: 3rem;
+    margin-right: 1rem;
+}
+
+.container {
+    position: relative;
+}
+
+a {
+    text-decoration: none;
+}
+
+a:hover {
+    color:darkblue;
+}
+
+.back-link {
+    position: absolute;
+    right: 2.5rem;
+    top: 2rem
+}
+
+.comp-change {
+    color: rgb(35, 152, 8);
+    font-size: 1.2rem;
+}
+
+.comp-change.red{
+    color: red;
+}
+
+.comp-change::before{
+    content: '('
+}
+
+.comp-change::after{
+    content: '%)'
+}
+
+
 
 #search-button {
     width:120px;

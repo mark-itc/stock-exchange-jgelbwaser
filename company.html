@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet"
+      integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx" crossorigin="anonymous">
+    <link rel="stylesheet" href="css/style.css">
+    <title>Company Info</title>
+  </head>
+  
+  <body>
+    
+    <div id="comp-info" class="container mt-5 shadow-lg p-5 bg-white rounded">
+
+      <a class="back-link" href="/index.html">Search</a>
+
+      <div class="headline mb-4 text-center d-flex align-items-center">
+        <a id=comp-website href="https://www.alcoa.com" target="blank"  class="d-flex align-items-center">
+        <img id="comp-logo" class="headline-logo" src="https://financialmodelingprep.com/images-New-jpg/AA.jpg" alt="">
+        <h2 class="mb-0 text-center display-4">
+          Alcoa Corporation</h2>
+        </a>
+      </div>
+      <h3 class="stock-price mb-3 d-flex align-items-center">
+        Stock price:&nbsp;
+        <span id="comp-price">37.62</span>
+        <span id="comp-currency">USD</span> &nbsp;
+        <span class="comp-change" id="comp-change">-5.26</span>
+      </h3>
+      <p id="comp-desp">
+        "Alcoa Corporation, together with its subsidiaries, produces and sells bauxite, alumina, and aluminum products in the United States, Spain, Australia, Iceland, Norway, Brazil, Canada, and internationally. The company operates through three segments: Bauxite, Alumina, and Aluminum. It engages in bauxite mining operations; and processes bauxite into alumina and sells it to customers who process it into industrial chemical products, as well as aluminum smelting and casting businesses. The company offers primary aluminum in the form of alloy ingot or value-add ingot to customers that produce products for the transportation, building and construction, packaging, wire, and other industrial markets. In addition, it owns hydro power plants that generates and sells electricity in the wholesale market to traders, large industrial consumers, distribution companies, and other generation companies. The company was formerly known as Alcoa Upstream Corporation and changed its name to Alcoa Corporation in October 2016. The company was founded in 1888 and is headquartered in Pittsburgh, Pennsylvania."
+      </p>
+
+
+      </div>
+    </div>
+    <script src="js/CompanyInfo.js"></script>
+    <script>
+      (async function() {
+        const params = new URLSearchParams(window.location.search);
+        const symbol = params.get('symbol');
+        const compInfo = new CompanyInfo(document.getElementById('comp-info'), symbol);
+        await compInfo.load();
+        await compInfo.addChart();
+      })();
+    </script>

@@ -13,7 +13,7 @@ class SearchResult {
         companies.forEach( company => {
             resultsHTML += this.getlistItemHTML(company)
         });
-        console.log(resultsHTML);
+
         this.resultsListHTML.innerHTML = resultsHTML;
     }
 
@@ -21,8 +21,6 @@ class SearchResult {
         let list = document.createElement('div');
         list.classList.add('list-group', 'list-group-flush');
         return list;
-        // return  `<div class="list-group list-group-flush">
-        //         </div>`;
     }
 
     getlistItemHTML(company) {
