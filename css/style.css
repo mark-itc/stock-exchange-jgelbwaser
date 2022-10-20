@@ -1,0 +1,24 @@
+* {
+    margin:0;
+}
+
+body {
+    /* color: red; */
+}
+
+
+#search-button {
+    width:120px;
+}
+
+#search-button #search-spinner {
+    display: none;
+}
+
+#search-button.loading #search-spinner {
+    display: inline-block;
+}
+
+#search-button.loading::after {
+    content: 'ing'
+}

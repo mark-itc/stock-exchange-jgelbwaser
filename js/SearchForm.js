@@ -3,7 +3,7 @@
 // URL COMPANY
 // https://stock-exchange-dot-full-stack-course-services.ew.r.appspot.com/api/v3/company/profile/GOOG
 
- https://stock-exchange-dot-full-stack-course-services.ew.r.appspot.com/api/v3/search?limit=10&amp;exchange=NASDAQ&amp;query=AA
+// https://stock-exchange-dot-full-stack-course-services.ew.r.appspot.com/api/v3/search?limit=10&amp;exchange=NASDAQ&amp;query=AA
 
 
 
@@ -32,7 +32,7 @@ class SearchForm {
     getFormHTML() {
         const form = document.createElement('form');
         form.innerHTML = `    
-            <div class="input-group mb-3">
+            <div class="input-group">
             <input type="text" id="search-term" class="form-control" placeholder="Search for company stock symbol" aria-label="Recipient's username"
             aria-describedby="basic-addon2">
             <div class="input-group-append">
@@ -49,8 +49,6 @@ class SearchForm {
         if(!symbolInput) return
         this.showLoadingStatus(true);
         this.companies = await this.getSymbolCompanies(symbolInput);
-        console.log(this.executeWithResults);
-        console.log(this.companies);
         this.executeWithResults(this.companies);
         this.showLoadingStatus(false);
     }
