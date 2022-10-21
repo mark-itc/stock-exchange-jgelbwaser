@@ -1,4 +1,4 @@
-* {
+*, h1, h2, h3 {
     margin:0;
 }
 
@@ -7,7 +7,7 @@ body {
 }
 
 .headline-logo {
-    height: 3rem;
+    height: 5rem;
     margin-right: 1rem;
 }
 
@@ -62,4 +62,19 @@ a:hover {
 
 #search-button.loading::after {
     content: 'ing'
+}
+
+#company-data-container .spinner-border {
+    height: 1.5rem;
+    width: 1.5rem;
+    margin-left: 1rem;
+}
+
+
+#chart-container {
+    text-align: center;
+}
+
+#companyChart {
+    width: 50%;
 }
