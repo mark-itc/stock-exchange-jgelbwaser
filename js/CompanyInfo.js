@@ -52,7 +52,9 @@ class CompanyInfo {
 
     renderCompanyData(data) {
         let redClassIfNegative = '';
-        if (data.changesPercentage < 0) { redClassIfNegative = 'red'; }
+        const changeInPercentFormated = parseFloat(data.changesPercentage).toFixed(2)
+        const priceFormated = parseFloat(data.price).toFixed(2)
+        if (changeInPercentFormated < 0) { redClassIfNegative = 'red'; }
         this.dataContainer.innerHTML = `
           <div class="headline mb-4 text-center d-flex align-items-center">
             <a id=comp-website href="${data.website}" target="blank" class="d-flex align-items-center">
@@ -62,9 +64,9 @@ class CompanyInfo {
           </div>
           <h3 class="stock-price mb-3 d-flex align-items-center">
             Stock price:&nbsp;
-            <span id="comp-price">${data.price}</span>&nbsp;
+            <span id="comp-price">${priceFormated}</span>&nbsp;
             <span id="comp-currency">${data.currency}</span> &nbsp;
-            <span class="comp-change ${redClassIfNegative}" id="comp-change">${data.changesPercentage}</span>
+            <span class="comp-change ${redClassIfNegative}" id="comp-change">${changeInPercentFormated}</span>
           </h3>
           <p id="comp-desp">${data.description}</p>
         `;

@@ -73,7 +73,16 @@ class SearchForm {
             const data = await this.makeAPIrequest(url);
             if(data.length > 10) data.length = 10; // max 10 results are displayed
             console.log('data', data);
-            return data;
+
+            const urlCompaniesArray = data.map((company) => {
+                return SearchForm.apiUrlCompany + company.symbol;
+            });
+
+            console.log(urlCompaniesArray);
+            const moreData = await this.makeAPIArrayRequest(urlCompaniesArray);
+            console.log('moreData', moreData);
+
+            return moreData;
 
             //apiUrlCompany
 

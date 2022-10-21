@@ -31,7 +31,7 @@ a:hover {
 
 .comp-change {
     color: rgb(35, 152, 8);
-    font-size: 1.2rem;
+    font-size: 70%;
 }
 
 .comp-change.red{
@@ -78,3 +78,18 @@ a:hover {
 #companyChart {
     width: 50%;
 }
+
+.li-company-logo {
+    max-height: 1.5rem;
+    margin-right: .5rem;
+
+}
+
+.li-company-symbol {
+    font-size: 70%;
+}
+
+.li-company-name {
+    margin-right: .5rem;
+}
+
