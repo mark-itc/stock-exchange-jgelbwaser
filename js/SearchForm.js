@@ -14,7 +14,8 @@ console.log('SearchForm.js loaded');
 class SearchForm {
 
     static apiUrlStart = 'https://stock-exchange-dot-full-stack-course-services.ew.r.appspot.com/api/v3/search?query=';
-    static apiUrlEnd = '&amp;limit=10&amp;exchange=NASDAQ';U
+    static apiUrlEnd = '&amp;limit=10&amp;exchange=NASDAQ';
+    static apiUrlCompany = 'https://stock-exchange-dot-full-stack-course-services.ew.r.appspot.com/api/v3/company/profile/';
    
     constructor(formContainer) {
         this.loadForm(formContainer);
@@ -69,18 +70,60 @@ class SearchForm {
     
     async getSymbolCompanies(symbolToSearch) {
             const url = SearchForm.apiUrlStart + symbolToSearch + SearchForm.apiUrlEnd;
-
-        try {
-            const response = await fetch(url);
-            if(!response.ok) throw new Error('response status:' + response.status);
-            const data = await response.json();
+            const data = await this.makeAPIrequest(url);
             if(data.length > 10) data.length = 10; // max 10 results are displayed
+            console.log('data', data);
             return data;
+
+            //apiUrlCompany
+
+
+        // try {
+        //     //const response = await fetch(url);
+        //     // if(!response.ok) throw new Error('response status:' + response.status);
+        //     // const data = await response.json();
+        //     // if(data.length > 10) data.length = 10; // max 10 results are displayed
+        //     // return data;
+
+        // } catch(err) {
+        //     console.log(err);
+
+        // }
+
+    }
+
+    async makeAPIrequest(url) {
+        console.log(url);
+        let urlsArray = []
+        if (!Array.isArray(url)) {
+            urlsArray = [url];
+        } else {
+            urlsArray = url;
+        }  
+        const resultArray = await this.makeAPIArrayRequest(urlsArray);
+        return resultArray[0];
+    }
+    
+    
+    async makeAPIArrayRequest(urlsArray) {
+        try {
+            const promises = [];
+
+
+            for( const thisurl of urlsArray )  {
+                const response = await fetch(thisurl);
+                if(!response.ok) throw new Error('response status:' + response.status);
+                promises.push(response.json());
+            }
+            const result = Promise.all(promises).then((data) =>  data);
+
+            return result;
 
         } catch(err) {
             console.log(err);
-
         }
 
     }
+
+
 }
