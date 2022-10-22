@@ -44,7 +44,6 @@ class CompanyInfo {
         const canvas = document.getElementById('companyChart')
         const ctx = canvas.getContext("2d");
         ctx.textAlign = "center";
-        //ctx.font="30px Comic Sans MS";
         ctx.fillStyle = 'rgb(255, 99, 132)';
         ctx.fillText("Loading graph...", canvas.width/2, canvas.height/2);
 

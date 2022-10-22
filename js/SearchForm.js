@@ -1,5 +1,3 @@
-console.log('SearchForm.js loaded');
-
 
 class SearchForm {
 
@@ -19,7 +17,6 @@ class SearchForm {
             event.preventDefault();
             this.submitForm();
         });
-
     }
     
     getFormHTML() {
@@ -38,11 +35,11 @@ class SearchForm {
     }
 
     async submitForm() {
-        const symbolInput = document.getElementById('search-term').value;
-        if(!symbolInput) return
+        this.symbolInput = document.getElementById('search-term').value;
+        if(!this.symbolInput) return
         this.showLoadingStatus(true);
-        this.companies = await this.getSymbolCompanies(symbolInput);
-        this.executeWithResults(this.companies);
+        this.companies = await this.getSymbolCompanies(this.symbolInput);
+        this.executeWithResults(this.companies, this.symbolInput);
         this.showLoadingStatus(false);
     }
 
@@ -57,7 +54,7 @@ class SearchForm {
     onSearch(customFunction) {
         this.executeWithResults = customFunction;
     }
-    
+
     async getSymbolCompanies(symbolToSearch) {
             const url = SearchForm.apiUrlStart + symbolToSearch + SearchForm.apiUrlEnd;
             const data = await this.makeAPIrequest(url);
@@ -69,21 +66,6 @@ class SearchForm {
             const moreData = await this.makeAPIArrayRequest(urlCompaniesArray);
 
             return moreData;
-
-            //apiUrlCompany
-
-
-        // try {
-        //     //const response = await fetch(url);
-        //     // if(!response.ok) throw new Error('response status:' + response.status);
-        //     // const data = await response.json();
-        //     // if(data.length > 10) data.length = 10; // max 10 results are displayed
-        //     // return data;
-
-        // } catch(err) {
-        //     console.log(err);
-
-        // }
 
     }
 

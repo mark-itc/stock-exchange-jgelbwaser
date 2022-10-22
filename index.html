@@ -30,8 +30,8 @@
       marquee.load();
       const form = new SearchForm(document.getElementById('form-container'));
       const results = new SearchResult(document.getElementById('results'));
-      form.onSearch((companies) => {
-        results.renderResults(companies);
+      form.onSearch((companies, searchterm) => {
+        results.renderResults(companies, searchterm);
       });
     })()
   </script>
