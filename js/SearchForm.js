@@ -1,13 +1,3 @@
-// URL results
-// https://stock-exchange-dot-full-stack-course-services.ew.r.appspot.com/api/v3/search?query=AA&amp;limit=10&amp;exchange=NASDAQ
-// URL COMPANY
-// https://stock-exchange-dot-full-stack-course-services.ew.r.appspot.com/api/v3/company/profile/GOOG
-
-// https://stock-exchange-dot-full-stack-course-services.ew.r.appspot.com/api/v3/search?limit=10&amp;exchange=NASDAQ&amp;query=AA
-
-
-
-
 console.log('SearchForm.js loaded');
 
 
@@ -72,15 +62,11 @@ class SearchForm {
             const url = SearchForm.apiUrlStart + symbolToSearch + SearchForm.apiUrlEnd;
             const data = await this.makeAPIrequest(url);
             if(data.length > 10) data.length = 10; // max 10 results are displayed
-            console.log('data', data);
 
             const urlCompaniesArray = data.map((company) => {
                 return SearchForm.apiUrlCompany + company.symbol;
             });
-
-            console.log(urlCompaniesArray);
             const moreData = await this.makeAPIArrayRequest(urlCompaniesArray);
-            console.log('moreData', moreData);
 
             return moreData;
 
@@ -102,7 +88,6 @@ class SearchForm {
     }
 
     async makeAPIrequest(url) {
-        console.log(url);
         let urlsArray = []
         if (!Array.isArray(url)) {
             urlsArray = [url];

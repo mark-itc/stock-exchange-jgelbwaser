@@ -7,7 +7,8 @@ body {
 }
 
 .headline-logo {
-    height: 5rem;
+    max-height: 5rem;
+    max-width: 8rem;
     margin-right: 1rem;
 }
 
@@ -91,5 +92,44 @@ a:hover {
 
 .li-company-name {
     margin-right: .5rem;
+}
+
+
+#marquee {
+    font-size: .75rem;
+    display: flex;
+    
+}
+
+.scrolling {
+    display: flex;
+    animation: marquee 100s linear infinite;
+}
+
+.marquee-link {
+    display: flex;
+}
+
+#marquee:hover .scrolling {
+    animation-play-state: paused;
+  }
+
+.marquee-price-change {
+    color: rgb(0, 189, 60);
+    margin-right: .5rem;
+
+}
+
+.marquee-link:hover .marquee-price-change {
+    color: rgb(1, 123, 39);
+}
+
+@keyframes marquee {
+    0% {
+        transform: translateX(0);
+    }
+    100% {
+        transform: translateX(-100%);
+    }
 }
 

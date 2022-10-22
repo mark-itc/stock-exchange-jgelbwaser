@@ -53,7 +53,7 @@ class CompanyInfo {
     renderCompanyData(data) {
         let redClassIfNegative = '';
         const changeInPercentFormated = parseFloat(data.changesPercentage).toFixed(2)
-        const priceFormated = parseFloat(data.price).toFixed(2)
+        const priceTwoDecimals = parseFloat(data.price).toFixed(2)
         if (changeInPercentFormated < 0) { redClassIfNegative = 'red'; }
         this.dataContainer.innerHTML = `
           <div class="headline mb-4 text-center d-flex align-items-center">
@@ -64,7 +64,7 @@ class CompanyInfo {
           </div>
           <h3 class="stock-price mb-3 d-flex align-items-center">
             Stock price:&nbsp;
-            <span id="comp-price">${priceFormated}</span>&nbsp;
+            <span id="comp-price">${priceTwoDecimals}</span>&nbsp;
             <span id="comp-currency">${data.currency}</span> &nbsp;
             <span class="comp-change ${redClassIfNegative}" id="comp-change">${changeInPercentFormated}</span>
           </h3>
