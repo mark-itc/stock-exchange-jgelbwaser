@@ -39,6 +39,10 @@ a:hover {
     color: red;
 }
 
+.comp-change.hide{
+    display: none;
+}
+
 .comp-change::before{
     content: '('
 }

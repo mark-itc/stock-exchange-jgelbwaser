@@ -13,10 +13,16 @@ class SearchForm {
         this.form = this.getFormHTML();
         formContainer.appendChild(this.form);
         this.searchButton = document.getElementById('search-button');
+        this.searchInput = document.getElementById('search-term');
         this.form.addEventListener('submit', (event) => {
             event.preventDefault();
             this.submitForm();
         });
+        this.searchInput.addEventListener('input', (event)=> {
+                if(event.currentTarget.value != '') {
+                    this.submitForm();
+                }
+        })
     }
     
     getFormHTML() {
@@ -35,12 +41,28 @@ class SearchForm {
     }
 
     async submitForm() {
-        this.symbolInput = document.getElementById('search-term').value;
-        if(!this.symbolInput) return
+        this.searchTerm = document.getElementById('search-term').value;
+        if(!this.searchTerm) return
         this.showLoadingStatus(true);
-        this.companies = await this.getSymbolCompanies(this.symbolInput);
-        this.executeWithResults(this.companies, this.symbolInput);
+        const foundCompanies = await this.getSearchTermCompanies(this.searchTerm);
+        
+        if(this.symbolHasChanged(foundCompanies.searchTerm)) return
+        this.executeWithResults(foundCompanies.data, this.searchTerm, true);
         this.showLoadingStatus(false);
+        if(this.symbolHasChanged(foundCompanies.searchTerm)) return
+        this.companies = await this.getAdditionalCompanyInfo(foundCompanies);
+        
+        if(this.symbolHasChanged(this.companies.searchTerm)) return;
+        this.executeWithResults(this.companies.data, this.searchTerm, false);
+        
+    }
+
+    symbolHasChanged(searchTermUsed) {
+        if (searchTermUsed == this.searchTerm) {
+            return false
+        } else {
+            return true
+        }
     }
 
     showLoadingStatus(isLoading) {
@@ -55,17 +77,20 @@ class SearchForm {
         this.executeWithResults = customFunction;
     }
 
-    async getSymbolCompanies(symbolToSearch) {
+    async getSearchTermCompanies(symbolToSearch) {
             const url = SearchForm.apiUrlStart + symbolToSearch + SearchForm.apiUrlEnd;
             const data = await this.makeAPIrequest(url);
             if(data.length > 10) data.length = 10; // max 10 results are displayed
+            return {data:data, searchTerm:symbolToSearch};
+    }
 
-            const urlCompaniesArray = data.map((company) => {
+    async getAdditionalCompanyInfo(companies) {
+            const urlCompaniesArray = companies.data.map((company) => {
                 return SearchForm.apiUrlCompany + company.symbol;
             });
             const moreData = await this.makeAPIArrayRequest(urlCompaniesArray);
 
-            return moreData;
+            return   {data:moreData, searchTerm:companies.searchTerm};
 
     }
 
@@ -81,15 +106,38 @@ class SearchForm {
     }
     
     
+//    async NEWmakeAPIArrayRequest(urlsArray) {
+
+//     let count = 0;
+
+//     const responses = await Promise.all(
+//         urlsArray.map(async url => {
+//             console.log(++count);
+//             const res = await fetch(url); // Send request for each id           
+//         })
+//     );
+
+//     const results = await Promise.all(
+//         responses.map(async response => {
+//             const res = await response.json(); // Send request for each id           
+//         })
+//     );
+
+//     return results;
+
+//    }
+   
+   
     async makeAPIArrayRequest(urlsArray) {
         try {
             const promises = [];
-
-
+            let count = 0;
+            
             for( const thisurl of urlsArray )  {
                 const response = await fetch(thisurl);
+                //console.log('fetch call no:', ++count);
                 if(!response.ok) throw new Error('response status:' + response.status);
-                promises.push(response.json());
+                promises.push(await response.json());
             }
             const result = Promise.all(promises).then((data) =>  data);
 
