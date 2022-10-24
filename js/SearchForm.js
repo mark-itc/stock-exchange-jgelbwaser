@@ -20,24 +20,36 @@ class SearchForm {
             this.submitForm();
         });
         this.searchInput.addEventListener('input', (event) => {
-            if (event.currentTarget.value != '') {
+            var refresh = window.location.protocol + "//" + window.location.host + window.location.pathname + '?query=' + event.currentTarget.value;    
+                window.history.pushState({ path: refresh }, '', refresh);
                 this.debouncedSubmitForm();
-            }
-        })
+        });
+        this.searchTerm = this.getQueryUrlParam();
+        if(this.searchTerm) {
+            this.searchInput.value = this.searchTerm
+            this.submitForm()};
+        }
+    
+
+    getQueryUrlParam() {
+        const params = new URLSearchParams(window.location.search);
+        const query = params.get('query');
+        console.log('get query:', query);
+        return query;
     }
+    
 
     debouncedSubmitForm = this.debounce(() => {
         this.submitForm()
     });
 
-    //NOT WORKING
+  
     debounce(cb, delay = SearchForm.defautDebounceDelay) {
         let timeout;
         return  (...args) => {
             clearTimeout(timeout);
             timeout =  setTimeout(() => {
-                 cb(...args);
-                 
+                 cb(...args);                
             }, delay);
         }
     }
@@ -59,6 +71,10 @@ getFormHTML() {
 
     async submitForm() {
     this.searchTerm = document.getElementById('search-term').value;
+    if(!this.searchTerm) {
+        this.executeWithResults()
+        return;
+    }
     if (!this.searchTerm) return
     this.showLoadingStatus(true);
     const foundCompanies = await this.getSearchTermCompanies(this.searchTerm);

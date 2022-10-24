@@ -7,10 +7,13 @@ class SearchResult {
     }
 
     renderResults(companies, searchTerm, temp=false) {
+        console.log('renderresults-companies',companies)
         let resultsHTML = '';
+        if(companies) {
             companies.forEach( company => {
                 resultsHTML += this.getlistItemHTML(company, searchTerm, temp);
             });
+        }
         this.resultsListHTML.innerHTML = resultsHTML;
     }
 
@@ -20,8 +23,6 @@ class SearchResult {
         return list;
     }
 
-
-    
 
     getlistItemHTML (company, searchTerm, temp) {
         let changePercentClass = '';
@@ -42,7 +43,7 @@ class SearchResult {
             }
             const nameWhithTermTag = this.instertSearchTermTag(company.profile.companyName, searchTerm);
             const symbolWhithTermTag = this.instertSearchTermTag(company.symbol, searchTerm);
-            return  `<a href="/company.html?symbol=${company.symbol}" class="list-group-item list-group-item-action">
+            return  `<a href="/company.html?query=${searchTerm}&symbol=${company.symbol}" class="list-group-item list-group-item-action">
             <div class="d-flex align-items-center">
             <img  class="li-company-logo" src="${company.profile.image}" alt="">
             <span class="li-company-name text-primary"> ${nameWhithTermTag}</span>

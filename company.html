@@ -23,7 +23,8 @@
     (async function () {
       const params = new URLSearchParams(window.location.search);
       const symbol = params.get('symbol');
-      const compInfo = new CompanyInfo(document.getElementById('comp-info'), symbol);
+      const searchTerm = params.get('query');
+      const compInfo = new CompanyInfo(document.getElementById('comp-info'), symbol, searchTerm);
       await compInfo.load();
       await compInfo.addChart();
     })();

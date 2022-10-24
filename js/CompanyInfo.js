@@ -5,14 +5,15 @@ class CompanyInfo {
     static apiChartQueryString = '?serietype=line';
     static graphPointMaxQty = 100;
 
-    constructor(container, symbol) {
+    constructor(container, symbol, searchTerm) {
         this.symbol = symbol;
-        this.setStructureHTML(container);
+        this.setStructureHTML(container, searchTerm);
         this.renderInitHTML();
     }
 
-    setStructureHTML(container) {
-        container.innerHTML = '<a class="back-link" href="/index.html">Search</a>'
+    setStructureHTML(container, searchTerm) {
+        if(!searchTerm) searchTerm = ''
+        container.innerHTML = `<a class="back-link" href="/index.html?query=${searchTerm}">Back></a>`
         this.dataContainer = document.createElement('div');
         this.dataContainer.id = 'company-data-container';
         container.appendChild(this.dataContainer);
