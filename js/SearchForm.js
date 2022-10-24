@@ -5,6 +5,7 @@ class SearchForm {
     static apiUrlEnd = '&amp;limit=10&amp;exchange=NASDAQ';
     static apiUrlCompany = 'https://stock-exchange-dot-full-stack-course-services.ew.r.appspot.com/api/v3/company/profile/';
     static defautDebounceDelay = 500;
+    static apiLimitCompanySymbQty = 3;
 
     constructor(formContainer) {
         this.loadForm(formContainer);
@@ -20,43 +21,43 @@ class SearchForm {
             this.submitForm();
         });
         this.searchInput.addEventListener('input', (event) => {
-            var refresh = window.location.protocol + "//" + window.location.host + window.location.pathname + '?query=' + event.currentTarget.value;    
-                window.history.pushState({ path: refresh }, '', refresh);
-                this.debouncedSubmitForm();
+            var refresh = window.location.protocol + "//" + window.location.host + window.location.pathname + '?query=' + event.currentTarget.value;
+            window.history.pushState({ path: refresh }, '', refresh);
+            this.debouncedSubmitForm();
         });
         this.searchTerm = this.getQueryUrlParam();
-        if(this.searchTerm) {
+        if (this.searchTerm) {
             this.searchInput.value = this.searchTerm
-            this.submitForm()};
-        }
-    
+            this.submitForm()
+        };
+    }
+
 
     getQueryUrlParam() {
         const params = new URLSearchParams(window.location.search);
         const query = params.get('query');
-        console.log('get query:', query);
         return query;
     }
-    
+
 
     debouncedSubmitForm = this.debounce(() => {
         this.submitForm()
     });
 
-  
+
     debounce(cb, delay = SearchForm.defautDebounceDelay) {
         let timeout;
-        return  (...args) => {
+        return (...args) => {
             clearTimeout(timeout);
-            timeout =  setTimeout(() => {
-                 cb(...args);                
+            timeout = setTimeout(() => {
+                cb(...args);
             }, delay);
         }
     }
 
-getFormHTML() {
-    const form = document.createElement('form');
-    form.innerHTML = `    
+    getFormHTML() {
+        const form = document.createElement('form');
+        form.innerHTML = `    
             <div class="input-group">
             <input type="text" id="search-term" class="form-control" placeholder="Search for company stock symbol" aria-label="Recipient's username"
             aria-describedby="basic-addon2">
@@ -66,121 +67,122 @@ getFormHTML() {
             Search</button>
             </div>
         `;
-    return form;
-}
+        return form;
+    }
 
     async submitForm() {
-    this.searchTerm = document.getElementById('search-term').value;
-    if(!this.searchTerm) {
-        this.executeWithResults()
-        return;
+        this.searchTerm = document.getElementById('search-term').value;
+        if (!this.searchTerm) {
+            this.executeWithResults()
+            return;
+        }
+        if (!this.searchTerm) return
+        this.showLoadingStatus(true);
+        const foundCompanies = await this.getSearchTermCompanies(this.searchTerm);
+
+        if (this.symbolHasChanged(foundCompanies.searchTerm)) return
+        this.executeWithResults(foundCompanies.data, this.searchTerm, true);
+        this.showLoadingStatus(false);
+
+        if (this.symbolHasChanged(foundCompanies.searchTerm)) return
+        this.companies = await this.getAdditionalCompanyInfo(foundCompanies);
+
+        if (this.symbolHasChanged(this.companies.searchTerm)) return;
+        this.executeWithResults(this.companies.data, this.searchTerm, false);
+
     }
-    if (!this.searchTerm) return
-    this.showLoadingStatus(true);
-    const foundCompanies = await this.getSearchTermCompanies(this.searchTerm);
 
-    if (this.symbolHasChanged(foundCompanies.searchTerm)) return
-    this.executeWithResults(foundCompanies.data, this.searchTerm, true);
-    this.showLoadingStatus(false);
-    if (this.symbolHasChanged(foundCompanies.searchTerm)) return
-    this.companies = await this.getAdditionalCompanyInfo(foundCompanies);
-
-    if (this.symbolHasChanged(this.companies.searchTerm)) return;
-    this.executeWithResults(this.companies.data, this.searchTerm, false);
-
-}
-
-symbolHasChanged(searchTermUsed) {
-    if (searchTermUsed == this.searchTerm) {
-        return false
-    } else {
-        return true
+    symbolHasChanged(searchTermUsed) {
+        if (searchTermUsed == this.searchTerm) {
+            return false
+        } else {
+            return true
+        }
     }
-}
 
-showLoadingStatus(isLoading) {
-    if (isLoading) {
-        this.searchButton.classList.add('loading');
-    } else {
-        this.searchButton.classList.remove('loading');
+    showLoadingStatus(isLoading) {
+        if (isLoading) {
+            this.searchButton.classList.add('loading');
+        } else {
+            this.searchButton.classList.remove('loading');
+        }
     }
-}
 
-onSearch(customFunction) {
-    this.executeWithResults = customFunction;
-}
+    onSearch(customFunction) {
+        this.executeWithResults = customFunction;
+    }
 
     async getSearchTermCompanies(symbolToSearch) {
-    const url = SearchForm.apiUrlStart + symbolToSearch + SearchForm.apiUrlEnd;
-    const data = await this.makeAPIrequest(url);
-    if (data.length > 10) data.length = 10; // max 10 results are displayed
-    return { data: data, searchTerm: symbolToSearch };
-}
+        const url = SearchForm.apiUrlStart + symbolToSearch + SearchForm.apiUrlEnd;
+        const data = await this.queryApiSearch(url);
+        if (data.length > 10) data.length = 10; // max 10 results are displayed
+        return { data: data, searchTerm: symbolToSearch };
+    }
 
     async getAdditionalCompanyInfo(companies) {
-    const urlCompaniesArray = companies.data.map((company) => {
-        return SearchForm.apiUrlCompany + company.symbol;
-    });
-    const moreData = await this.makeAPIArrayRequest(urlCompaniesArray);
+        const symbolArray = companies.data.map((company) => {
+            return company.symbol;
+        });
 
-    return { data: moreData, searchTerm: companies.searchTerm };
+        const moreData = await this.makeAPIArrayRequest(symbolArray);
 
-}
-
-    async makeAPIrequest(url) {
-    let urlsArray = []
-    if (!Array.isArray(url)) {
-        urlsArray = [url];
-    } else {
-        urlsArray = url;
+        return { data: moreData, searchTerm: companies.searchTerm };
     }
-    const resultArray = await this.makeAPIArrayRequest(urlsArray);
-    return resultArray[0];
-}
 
 
-//    async NEWmakeAPIArrayRequest(urlsArray) {
 
-//     let count = 0;
-
-//     const responses = await Promise.all(
-//         urlsArray.map(async url => {
-//             console.log(++count);
-//             const res = await fetch(url); // Send request for each id           
-//         })
-//     );
-
-//     const results = await Promise.all(
-//         responses.map(async response => {
-//             const res = await response.json(); // Send request for each id           
-//         })
-//     );
-
-//     return results;
-
-//    }
-   
-   
-    async makeAPIArrayRequest(urlsArray) {
-    try {
-        const promises = [];
-        let count = 0;
-
-        for (const thisurl of urlsArray) {
-            const response = await fetch(thisurl);
-            //console.log('fetch call no:', ++count);
+    async queryApiSearch(url) {
+        try {
+            const response = await fetch(url);
             if (!response.ok) throw new Error('response status:' + response.status);
-            promises.push(await response.json());
+            const data = await response.json();
+            return data
+        } catch (err) {
+            console.log(err)
+            return
         }
-        const result = Promise.all(promises).then((data) => data);
-
-        return result;
-
-    } catch (err) {
-        console.log(err);
     }
 
-}
+
+    async makeAPIArrayRequest(symbolArray) {
+        try {
+            const apiArray = this.getApiCompanyUrlArray(symbolArray);
+            const promises = [];
+            let count = 0;
+
+            for (const thisurl of apiArray) {
+                const response = await fetch(thisurl);
+                if (!response.ok) throw new Error('response status:' + response.status);
+                promises.push(response.json());
+            }
+            const result = await Promise.all(promises).then((data) => data);
+            
+            let companyInfoArray = [];
+            result.forEach((response)=>{
+                if(response.companyProfiles) {
+                    companyInfoArray = [...companyInfoArray, ...response.companyProfiles];
+                } else {
+                    companyInfoArray.push(response);
+                }
+            });
+            
+            return companyInfoArray;
+
+        } catch (err) {
+            console.log(err);
+        }
+    }
+
+    getApiCompanyUrlArray(symbolArray) {
+        const urlArray = [];
+
+        while(symbolArray.length > 0) {
+            const subArray = symbolArray.splice(0,SearchForm.apiLimitCompanySymbQty);
+            const apiUrl = SearchForm.apiUrlCompany + subArray.join()
+            urlArray.push(apiUrl);
+        }
+        return urlArray;
+     }
 
 
 }

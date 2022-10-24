@@ -7,7 +7,6 @@ class SearchResult {
     }
 
     renderResults(companies, searchTerm, temp=false) {
-        console.log('renderresults-companies',companies)
         let resultsHTML = '';
         if(companies) {
             companies.forEach( company => {
