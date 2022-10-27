@@ -4,7 +4,7 @@ class SearchForm {
     static apiUrlStart = 'https://stock-exchange-dot-full-stack-course-services.ew.r.appspot.com/api/v3/search?query=';
     static apiUrlEnd = '&amp;limit=10&amp;exchange=NASDAQ';
     static apiUrlCompany = 'https://stock-exchange-dot-full-stack-course-services.ew.r.appspot.com/api/v3/company/profile/';
-    static defautDebounceDelay = 500;
+    static defautDebounceDelay = 350;
     static apiLimitCompanySymbQty = 3;
 
     constructor(formContainer) {
@@ -143,26 +143,23 @@ class SearchForm {
         }
     }
 
-
     async makeAPIArrayRequest(symbolArray) {
         try {
             const apiArray = this.getApiCompanyUrlArray(symbolArray);
-            const promises = [];
-            let count = 0;
-
-            for (const thisurl of apiArray) {
-                const response = await fetch(thisurl);
+            const responses = await Promise.all(apiArray.map(url => {
+                return fetch(url);
+            }));
+            const results = await Promise.all(responses.map(response => {
                 if (!response.ok) throw new Error('response status:' + response.status);
-                promises.push(response.json());
-            }
-            const result = await Promise.all(promises).then((data) => data);
-            
+                return response.json();
+            }));
+
             let companyInfoArray = [];
-            result.forEach((response)=>{
-                if(response.companyProfiles) {
-                    companyInfoArray = [...companyInfoArray, ...response.companyProfiles];
+            results.forEach((result)=>{
+                if(result.companyProfiles) {
+                    companyInfoArray = [...companyInfoArray, ...result.companyProfiles];
                 } else {
-                    companyInfoArray.push(response);
+                    companyInfoArray.push(result);
                 }
             });
             
@@ -172,6 +169,8 @@ class SearchForm {
             console.log(err);
         }
     }
+
+
 
     getApiCompanyUrlArray(symbolArray) {
         const urlArray = [];
