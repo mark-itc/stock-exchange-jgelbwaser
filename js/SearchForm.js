@@ -1,4 +1,3 @@
-
 class SearchForm {
 
     static apiUrlStart = 'https://stock-exchange-dot-full-stack-course-services.ew.r.appspot.com/api/v3/search?query=';
@@ -21,7 +20,7 @@ class SearchForm {
             this.submitForm();
         });
         this.searchInput.addEventListener('input', (event) => {
-            var refresh = window.location.protocol + "//" + window.location.host + window.location.pathname + '?query=' + event.currentTarget.value;
+            let refresh = window.location.protocol + "//" + window.location.host + window.location.pathname + '?query=' + event.currentTarget.value;
             window.history.pushState({ path: refresh }, '', refresh);
             this.debouncedSubmitForm();
         });

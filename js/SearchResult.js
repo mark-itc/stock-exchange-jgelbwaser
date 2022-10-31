@@ -2,7 +2,7 @@
 class SearchResult {
 
     constructor(resultContainer) {
-        this.resultsListHTML = this.getlistHTML();
+        this.resultsListHTML = this.getListHTML();
         resultContainer.appendChild(this.resultsListHTML);
     }
 
@@ -10,20 +10,20 @@ class SearchResult {
         let resultsHTML = '';
         if(companies) {
             companies.forEach( company => {
-                resultsHTML += this.getlistItemHTML(company, searchTerm, temp);
+                resultsHTML += this.getListItemHTML(company, searchTerm, temp);
             });
         }
         this.resultsListHTML.innerHTML = resultsHTML;
     }
 
-    getlistHTML() {
+    getListHTML() {
         let list = document.createElement('div');
         list.classList.add('list-group', 'list-group-flush');
         return list;
     }
 
 
-    getlistItemHTML (company, searchTerm, temp) {
+    getListItemHTML (company, searchTerm, temp) {
         let changePercentClass = '';
         let changeInPercent = 'loading';  
 
@@ -40,8 +40,8 @@ class SearchResult {
                 if (changeInPercent < 0) { changePercentClass = 'red'; }
     
             }
-            const nameWhithTermTag = this.instertSearchTermTag(company.profile.companyName, searchTerm);
-            const symbolWhithTermTag = this.instertSearchTermTag(company.symbol, searchTerm);
+            const nameWhithTermTag = this.insertSearchTermTag(company.profile.companyName, searchTerm);
+            const symbolWhithTermTag = this.insertSearchTermTag(company.symbol, searchTerm);
             return  `<a href="/company.html?query=${searchTerm}&symbol=${company.symbol}" class="list-group-item list-group-item-action">
             <div class="d-flex align-items-center">
             <img  class="li-company-logo" src="${company.profile.image}" alt="">
@@ -55,7 +55,7 @@ class SearchResult {
         }
     }
 
-     instertSearchTermTag(string, searchTerm) {
+     insertSearchTermTag(string, searchTerm) {
 
         const openingTag = '<span class="search-term">';
         const closingTag = '</span>';
